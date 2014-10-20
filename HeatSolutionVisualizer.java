@@ -206,7 +206,7 @@ public class HeatSolutionVisualizer extends JFrame {
 		manager.addKeyEventDispatcher(new KeyEventDispatcher() {
 			@Override
 			public boolean dispatchKeyEvent(KeyEvent e) {
-				if (e.getKeyCode() == 37 || e.getKeyCode() == 39) {
+                if (e.getID() == KeyEvent.KEY_PRESSED && (e.getKeyCode() == 37 || e.getKeyCode() == 39)) {
 					if (maxTime > 0) {
 						if (e.getKeyCode() == 37) {
 							if (--t < 0) {
