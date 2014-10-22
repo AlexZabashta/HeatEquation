@@ -28,7 +28,8 @@ public class HeatSolutionVisualizer extends JFrame {
         new DownstreamExplicit(), 
         new DownstreamImplicit(),  
         new UpstreamExplicit(), 
-        new UpstreamImplicit()
+        new UpstreamImplicit(),
+        new Leapfrog()
     };
 
 	BufferedImage canvas = new BufferedImage(42, 23, BufferedImage.TYPE_INT_RGB);
