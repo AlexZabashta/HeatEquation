@@ -24,7 +24,7 @@ import javax.swing.WindowConstants;
 
 public class HeatSolutionVisualizer extends JFrame {
 
-	static HeatEquationSolver[] solovers = new HeatEquationSolver[] { new DownstreamExplicit(), new UpstreamExplicit() };
+	static HeatEquationSolver[] solovers = new HeatEquationSolver[] { new DownstreamExplicit(), new UpstreamExplicit(), new UpstreamImplicit() };
 
 	BufferedImage canvas = new BufferedImage(42, 23, BufferedImage.TYPE_INT_RGB);
 	JLabel graph = new JLabel();
@@ -189,9 +189,13 @@ public class HeatSolutionVisualizer extends JFrame {
 		}
 		{
 			component[2] = new Component[var.length];
-
+            var[0] = new JTextField("1000");
+            var[1] = new JTextField("1");
+            var[2] = new JTextField("1");
+            var[3] = new JTextField("0.1");
+            var[4] = new JTextField("1");
 			for (int i = 0; i < varName.length; i++) {
-				content.add(component[2][i] = var[i] = new JTextField());
+				content.add(component[2][i] = var[i]);
 			}
 		}
 
