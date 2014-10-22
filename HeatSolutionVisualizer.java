@@ -24,7 +24,7 @@ import javax.swing.WindowConstants;
 
 public class HeatSolutionVisualizer extends JFrame {
 
-	static HeatEquationSolver[] solovers = new HeatEquationSolver[] { new TestSolverDiffusion(), new TestSolverMove() };
+	static HeatEquationSolver[] solovers = new HeatEquationSolver[] { new DownstreamExplicit(), new UpstreamExplicit() };
 
 	BufferedImage canvas = new BufferedImage(42, 23, BufferedImage.TYPE_INT_RGB);
 	JLabel graph = new JLabel();
