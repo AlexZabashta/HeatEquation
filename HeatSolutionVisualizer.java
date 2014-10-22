@@ -22,15 +22,11 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
+import static java.lang.Math.*;
+
 public class HeatSolutionVisualizer extends JFrame {
 
-	static HeatEquationSolver[] solovers = new HeatEquationSolver[] { 
-        new DownstreamExplicit(), 
-        new DownstreamImplicit(),  
-        new UpstreamExplicit(), 
-        new UpstreamImplicit(),
-        new Leapfrog()
-    };
+	static HeatEquationSolver[] solovers = new HeatEquationSolver[] { new DownstreamExplicit(), new DownstreamImplicit(), new UpstreamExplicit(), new UpstreamImplicit(), new Leapfrog() };
 
 	BufferedImage canvas = new BufferedImage(42, 23, BufferedImage.TYPE_INT_RGB);
 	JLabel graph = new JLabel();
@@ -51,11 +47,13 @@ public class HeatSolutionVisualizer extends JFrame {
 	Random rnd = new Random();
 	int t = 0, maxTime = 0;
 
+	int speed = 1, logSpeed = 0;
+
 	double[] curve;
 
 	public void onResize() {
-		int ch = Math.max(getHeight() - textH * (component.length + 2), textH);
-		int cw = Math.max(getWidth(), textH);
+		int ch = max(getHeight() - textH * (component.length + 2), textH);
+		int cw = max(getWidth(), textH);
 		curve = new double[cw];
 		canvas = new BufferedImage(cw, ch, BufferedImage.TYPE_INT_RGB);
 		graph.setBounds(0, 0, cw, ch);
@@ -63,7 +61,7 @@ public class HeatSolutionVisualizer extends JFrame {
 
 		for (int i = 0; i < component.length; i++) {
 			for (int j = 0; j < component[i].length; j++) {
-				int w = Math.max(textH, cw / component[i].length);
+				int w = max(textH, cw / component[i].length);
 				component[i][j].setBounds(j * w, ch + i * textH, w, textH);
 			}
 		}
@@ -82,7 +80,7 @@ public class HeatSolutionVisualizer extends JFrame {
 		if (cliks.isEmpty()) {
 			if (f.length > 0) {
 				for (int i = 0; i < s; i++) {
-					if (0 <= t && t < f[i].length) {
+					if (checkbox[i].getState() && 0 <= t && t < f[i].length) {
 						double[] cur = f[i][t];
 						int m = cur.length;
 						g.setColor(color[i]);
@@ -112,7 +110,7 @@ public class HeatSolutionVisualizer extends JFrame {
 	void reCalc() {
 		try {
 			if (cliks.isEmpty()) {
-				throw new Exception("f is empty" + System.currentTimeMillis());
+				throw new Exception("f is empty");
 			}
 			int n = Integer.parseInt(var[0].getText());
 
@@ -177,7 +175,7 @@ public class HeatSolutionVisualizer extends JFrame {
 		{
 			component[0] = new Component[s];
 			for (int i = 0; i < s; i++) {
-				color[i] = new Color(rnd.nextInt(150) + 56, rnd.nextInt(150) + 56, rnd.nextInt(150) + 56);
+				color[i] = Color.getHSBColor(((float) i / s), 1.0f, 1.0f);
 				checkbox[i] = new Checkbox(solovers[i].getClass().getName(), null, true);
 				checkbox[i].setBackground(color[i]);
 				content.add(component[0][i] = checkbox[i]);
@@ -195,11 +193,11 @@ public class HeatSolutionVisualizer extends JFrame {
 		}
 		{
 			component[2] = new Component[var.length];
-            var[0] = new JTextField("1000");
-            var[1] = new JTextField("1");
-            var[2] = new JTextField("1");
-            var[3] = new JTextField("0.1");
-            var[4] = new JTextField("1");
+			var[0] = new JTextField("1000");
+			var[1] = new JTextField("1");
+			var[2] = new JTextField("1");
+			var[3] = new JTextField("0.1");
+			var[4] = new JTextField("1");
 			for (int i = 0; i < varName.length; i++) {
 				content.add(component[2][i] = var[i]);
 			}
@@ -216,20 +214,20 @@ public class HeatSolutionVisualizer extends JFrame {
 		manager.addKeyEventDispatcher(new KeyEventDispatcher() {
 			@Override
 			public boolean dispatchKeyEvent(KeyEvent e) {
-                if (e.getID() == KeyEvent.KEY_PRESSED && (e.getKeyCode() == 37 || e.getKeyCode() == 39)) {
-					if (maxTime > 0) {
-						if (e.getKeyCode() == 37) {
-							if (--t < 0) {
-								t += maxTime;
-							}
-						} else {
-							if (++t >= maxTime) {
-								t -= maxTime;
-							}
-						}
-						setTitle(t + "  " + maxTime);
+				if (e.getID() == KeyEvent.KEY_PRESSED) {
+					int keyCode = e.getKeyCode();
+					if ((keyCode == 37 || keyCode == 39) && 0 < maxTime) {
+						t = (t + maxTime * 4 + (keyCode - 38) * (speed % maxTime)) % maxTime;
+						setTitle("time = " + t);
 						draw();
 					}
+
+					if (keyCode == 38 || keyCode == 40) {
+						logSpeed = max(0, min(10, logSpeed - keyCode + 39));
+						speed = 1 << logSpeed;
+						setTitle("speed = " + speed);
+					}
+
 				}
 				return false;
 			}
