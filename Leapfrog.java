@@ -21,7 +21,7 @@ public class Leapfrog implements HeatEquationSolver {
             double[] curLayer = new double[m];
 
 			for (int i = 1; i < m - 1; i++)
-                curLayer[i] = TT[i] + 2 * dt * (k * (T[i + 1] - 2 * T[i] + T[i - 1]) / dx / dx - u * (T[i] - T[i - 1]) / dx);
+                curLayer[i] = TT[i] + 2 * dt * (k * (T[i + 1] - 2 * T[i] + T[i - 1]) / dx / dx - u * (T[i + 1] - T[i - 1]) / dx / 2);
             curLayer[0    ] = T[0    ];
             curLayer[m - 1] = T[m - 1];
 			ans[layer] = curLayer;
